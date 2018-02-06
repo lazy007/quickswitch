@@ -1,0 +1,6 @@
+*.exe
+moc*.*
+deploy/
+windows/
+rcc*.go
+*.cpp
