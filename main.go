@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"runtime"
 	"strings"
 	"time"
@@ -24,6 +25,7 @@ const VERSION = "0.0.1"
 const TITLE = "QuickSwitch"
 
 func init() {
+
 	definition.Location, _ = time.LoadLocation("Asia/Shanghai")
 	switch runtime.GOOS {
 	case "windows":
@@ -32,7 +34,38 @@ func init() {
 		definition.HostFile = "/etc/hosts" // linux darwin host
 	}
 	definition.BackUpFile = definition.HostFile + "_" + TITLE
+
+
+
+	return
+	s := make(chan bool) //检索是否存在过进程 channel
+	processName := "host.exe"
+	switch runtime.GOOS {
+	case "windows":
+		tasklist := exec.Command("tasklist")
+		findstr := exec.Command("findstr", "/i", strings.ToLower(processName))
+		findstr.Stdin, _ = tasklist.StdoutPipe()
+		go func() {
+			output, _ := findstr.Output()
+			findstr.Wait()
+			if strings.Contains(strings.ToLower(string(output)), strings.ToLower(processName)) {
+				s <- true
+			} else {
+				s <- false
+			}
+		}()
+		tasklist.Run()
+		if <-s {
+			//弹出框
+			fmt.Println("open process failed")
+			os.Exit(0)
+		}
+	case "darwin":
+
+	}
+
 }
+
 
 func main() {
 	app := widgets.NewQApplication(len(os.Args), os.Args)

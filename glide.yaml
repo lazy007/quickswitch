@@ -1,0 +1,10 @@
+package: qt/host
+import:
+- package: github.com/CodyGuo/win
+- package: github.com/fsnotify/fsnotify
+  version: ^1.4.7
+- package: github.com/therecipe/qt
+  subpackages:
+  - core
+  - gui
+  - widgets

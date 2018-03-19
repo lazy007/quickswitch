@@ -8,7 +8,6 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"os/exec"
 	"regexp"
 	"runtime"
 	"strings"
@@ -17,6 +16,7 @@ import (
 	"qt/host/compent"
 	"qt/host/definition"
 
+	"github.com/CodyGuo/win"
 	"github.com/fsnotify/fsnotify"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
@@ -92,7 +92,7 @@ func SaveToHostFile(filePath string, dns *map[string]*definition.Domain) {
 	}
 	//https://zh.wikihow.com/%E5%88%B7%E6%96%B0-DNS 刷新dns
 	go func() {
-		var cmd *exec.Cmd
+
 		switch runtime.GOOS {
 		case "darwin":
 			//cmd := exec.Command("")
@@ -100,15 +100,28 @@ func SaveToHostFile(filePath string, dns *map[string]*definition.Domain) {
 			//cmd = exec.Command("")
 		default:
 			//start /b
-			cmd = exec.Command("ipconfig", "/displaydns")
-			cmd.Env = os.Environ()
+			//cmd = exec.Command("ipconfig", "/flushdns")
+			cmd := "ipconfig /flushdns"
+			lpCmdLine := win.StringToBytePtr(cmd)
+			ret:= win.WinExec(lpCmdLine, win.SW_HIDE)
+			if ret <= 31 {
+				winExecError := map[uint32]string{
+					0:  "The system is out of memory or resources.",
+					2:  "The .exe file is invalid.",
+					3:  "The specified file was not found.",
+					11: "The specified path was not found.",
+				}
+				widgets.QMessageBox_Information(nil, "刷新host失败", winExecError[ret], mCBtn, mCBtn)
+			} else {
+				fmt.Println("刷新缓存成功")
+			}
 		}
-		if err := cmd.Run(); err != nil {
-			fmt.Println(err.Error())
-			return
-		} else {
-			fmt.Println("刷新缓存成功")
-		}
+		//if err := cmd.Run(); err != nil {
+		//	fmt.Println(err.Error())
+		//	return
+		//} else {
+		//	fmt.Println("刷新缓存成功")
+		//}
 	}()
 	widgets.QMessageBox_Information(nil, "切换Host成功", "切换Host成功", mCBtn, mCBtn)
 }
@@ -117,7 +130,7 @@ func SaveToHostFile(filePath string, dns *map[string]*definition.Domain) {
 func RenderView(layout *widgets.QVBoxLayout) {
 	file, err := os.Open(definition.HostFile)
 	if err != nil {
-		Error("打开host失败 原因: " + err.Error())
+		Error("打开host:"+ definition.HostFile +"失败,原因: " + err.Error())
 		return
 	}
 	reader := bufio.NewReader(file)

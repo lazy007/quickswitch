@@ -4,9 +4,7 @@
 
 # 已知BUG 
 - host的备注格式必须得紧挨着域名,不能有空格,否则无法正常被系统解析出来.  目前先记录一下.
-- flash dns(存在问题,执行命令的时候会弹出黑窗口windows),如何隐藏窗口执行
-- 启动时检测一下是否已经启动过该应用. 否则quit
-- golang 调用cmd下程序隐藏黑窗口-方法1:http://blog.csdn.net/CodyGuo/article/details/52589455
+- flash dns(存在问题,执行命令的时候会弹出黑窗口windows),如何隐藏窗口执行(http://blog.csdn.net/CodyGuo/article/details/52589455)
 
 
 # 功能
@@ -23,6 +21,7 @@
 - [x] 托盘管理
 - [ ] 优化UI界面
 - [ ] macos 申请管理员权限脚本
+- [ ] 启动时检测一下是否已经启动过该应用. 否则quit
 
 
 # 使用 / 安装
