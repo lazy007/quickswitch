@@ -8,10 +8,10 @@ import (
 	"strings"
 	"time"
 
-	"qt/host/definition"
-	"qt/host/utils"
+	"quickswitch/definition"
+	"quickswitch/utils"
 
-	"qt/host/compent"
+	"quickswitch/compent"
 
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/gui"
@@ -25,7 +25,6 @@ const VERSION = "0.0.1"
 const TITLE = "QuickSwitch"
 
 func init() {
-
 	definition.Location, _ = time.LoadLocation("Asia/Shanghai")
 	switch runtime.GOOS {
 	case "windows":

@@ -3,7 +3,7 @@ package compent
 import (
 	"strings"
 
-	"qt/host/definition"
+	"quickswitch/definition"
 
 	"github.com/therecipe/qt/core"
 	"github.com/therecipe/qt/widgets"

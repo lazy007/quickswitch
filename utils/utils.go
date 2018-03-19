@@ -9,14 +9,11 @@ import (
 	"log"
 	"os"
 	"regexp"
-	"runtime"
 	"strings"
 	"time"
+	"quickswitch/compent"
+	"quickswitch/definition"
 
-	"qt/host/compent"
-	"qt/host/definition"
-
-	"github.com/CodyGuo/win"
 	"github.com/fsnotify/fsnotify"
 	"github.com/therecipe/qt/gui"
 	"github.com/therecipe/qt/widgets"
@@ -91,38 +88,9 @@ func SaveToHostFile(filePath string, dns *map[string]*definition.Domain) {
 		return
 	}
 	//https://zh.wikihow.com/%E5%88%B7%E6%96%B0-DNS 刷新dns
-	go func() {
-
-		switch runtime.GOOS {
-		case "darwin":
-			//cmd := exec.Command("")
-		case "linux":
-			//cmd = exec.Command("")
-		default:
-			//start /b
-			//cmd = exec.Command("ipconfig", "/flushdns")
-			cmd := "ipconfig /flushdns"
-			lpCmdLine := win.StringToBytePtr(cmd)
-			ret:= win.WinExec(lpCmdLine, win.SW_HIDE)
-			if ret <= 31 {
-				winExecError := map[uint32]string{
-					0:  "The system is out of memory or resources.",
-					2:  "The .exe file is invalid.",
-					3:  "The specified file was not found.",
-					11: "The specified path was not found.",
-				}
-				widgets.QMessageBox_Information(nil, "刷新host失败", winExecError[ret], mCBtn, mCBtn)
-			} else {
-				fmt.Println("刷新缓存成功")
-			}
-		}
-		//if err := cmd.Run(); err != nil {
-		//	fmt.Println(err.Error())
-		//	return
-		//} else {
-		//	fmt.Println("刷新缓存成功")
-		//}
-	}()
+	FlashDns(func(message string) {
+		widgets.QMessageBox_Information(nil, "刷新host失败", message, mCBtn, mCBtn)
+	})
 	widgets.QMessageBox_Information(nil, "切换Host成功", "切换Host成功", mCBtn, mCBtn)
 }
 
