@@ -8,11 +8,11 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"quickswitch/compent"
+	"quickswitch/definition"
 	"regexp"
 	"strings"
 	"time"
-	"quickswitch/compent"
-	"quickswitch/definition"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/therecipe/qt/gui"
@@ -43,10 +43,10 @@ func SaveToHostFile(filePath string, dns *map[string]*definition.Domain) {
 		for _, host := range hosts.Dns {
 			comment := ""
 			if !host.Selected {
-				comment = "#"
+				comment = "#" //如果域名不是启用状态设置为注释
 			}
 			if domain != definition.ISNOTDOMAIN {
-				content = content + comment + host.Ip + " " + host.Host + " " + host.Comment + definition.EOL
+				content = content + comment + host.Ip + " " + host.Host + host.Comment + definition.EOL
 			} else {
 				if host.Str != "" {
 					content += host.Str + definition.EOL
@@ -98,7 +98,7 @@ func SaveToHostFile(filePath string, dns *map[string]*definition.Domain) {
 func RenderView(layout *widgets.QVBoxLayout) {
 	file, err := os.Open(definition.HostFile)
 	if err != nil {
-		Error("打开host:"+ definition.HostFile +"失败,原因: " + err.Error())
+		Error("打开host:" + definition.HostFile + "失败,原因: " + err.Error())
 		return
 	}
 	reader := bufio.NewReader(file)
