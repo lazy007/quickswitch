@@ -29,7 +29,7 @@
 1. 下载
 
 ```bash
-go get -u -v github.com/lazy007/quickswitch
+go get -u -v github.com/xiusin/quickswitch
 ```
 
 2. 部署app 
